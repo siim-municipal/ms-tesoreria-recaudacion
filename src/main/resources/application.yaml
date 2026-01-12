@@ -1,3 +1,39 @@
 spring:
   application:
     name: ms-tesoreria-recaudacion
+
+  profiles:
+    active: ${PROFILE_SPRING:dev}
+
+  datasource:
+    url: ${URL_BD_TESORERIA:jdbc:postgresql://localhost:5433/tesoreria_db}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:Abc12345}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: tuxtepec
+    open-in-view: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    default-schema: tuxtepec
+    liquibase-schema: public
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI_KEYCLOAK:http://localhost:8180/realms/tuxtepec-gob}
+          jwk-set-uri: ${JWK_SET_URI_KEYCLOAK:http://keycloak:8180/realms/tuxtepec-gob/protocol/openid-connect/certs}
+
+app:
+  security:
+    client-id: ${KEYCLOAK_CLIENT_ID:siim-frontend}
