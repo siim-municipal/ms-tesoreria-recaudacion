@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="create-schema-tuxtepec" author="hugo cobos" dbms="postgresql">
+        <preConditions onFail="MARK_RAN" onError="HALT">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.schemata
+                    WHERE schema_name = 'tuxtepec'
+                </sqlCheck>
+            </not>
+        </preConditions>
+
+        <sql>CREATE SCHEMA tuxtepec;</sql>
+    </changeSet>
+
+</databaseChangeLog>

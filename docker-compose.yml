@@ -1,0 +1,37 @@
+services:
+  ms-tesoreria-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ms-tesoreria-app
+
+    restart: always
+
+    ports:
+      - "8086:8080"
+
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=${PROFILE_SPRING}
+      # Conexión DB
+      - URL_BD_TESORERIA=${URL_BD_TESORERIA}
+      - USER_NAME_BD=${USER_NAME_BD}
+      - PASSWORD_BD=${PASSWORD_BD}
+      # Seguridad Keycloak
+      - ISSUER_URI_KEYCLOAK=${ISSUER_URI_KEYCLOAK}
+      - JWK_SET_URI_KEYCLOAK=${JWK_SET_URI_KEYCLOAK}
+      # PostGIS y Hibernate
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+
+    # Configuración de red
+    networks:
+      - siim-network
+
+# Definimos la red
+networks:
+  siim-network:
+    name: siim-global-net
+    external: true
