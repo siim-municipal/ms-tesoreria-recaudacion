@@ -3,7 +3,45 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
 
-    <property name="schema_name" value="tuxtepec"/>
+    <changeSet id="001-create-table-cajas" author="Hugo Cobos">
+        <createTable tableName="cat_cajas">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nombre" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ubicacion" type="VARCHAR(200)"/>
+            <column name="ip_asignada" type="VARCHAR(45)"/>
+            <column name="activa" type="BOOLEAN" defaultValueBoolean="true"/>
+        </createTable>
 
+        <createTable tableName="operacion_sesiones_caja">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="caja_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_sesion_caja" references="cat_cajas(id)"/>
+            </column>
+            <column name="usuario_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fecha_apertura" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fecha_cierre" type="TIMESTAMP"/>
+            <column name="saldo_inicial" type="DECIMAL(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="estatus" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="operacion_sesiones_caja" indexName="idx_sesion_activa_caja">
+            <column name="caja_id"/>
+            <column name="estatus"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

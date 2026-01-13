@@ -20,9 +20,11 @@ services:
       # Seguridad Keycloak
       - ISSUER_URI_KEYCLOAK=${ISSUER_URI_KEYCLOAK}
       - JWK_SET_URI_KEYCLOAK=${JWK_SET_URI_KEYCLOAK}
-      # PostGIS y Hibernate
+
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+
+      - EUREKA_URI=${EUREKA_URI}
 
       - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
 
