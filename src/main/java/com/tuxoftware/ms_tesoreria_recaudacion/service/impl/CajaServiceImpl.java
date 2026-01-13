@@ -1,4 +1,4 @@
-package com.tuxoftware.ms_tesoreria_recaudacion.service;
+package com.tuxoftware.ms_tesoreria_recaudacion.service.impl;
 
 
 import com.tuxoftware.ms_tesoreria_recaudacion.dto.request.AperturaCajaRequest;
@@ -7,6 +7,7 @@ import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.Caja;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.SesionCaja;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.repository.CajaRepository;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.repository.SesionCajaRepository;
+import com.tuxoftware.ms_tesoreria_recaudacion.service.CajaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -44,4 +44,44 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="004-create-cri-table" author="tuxoftware">
+        <createTable tableName="cat_rubros_ingresos">
+            <column name="codigo_cri" type="VARCHAR(20)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="descripcion" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cuenta_contable" type="VARCHAR(50)"/>
+            <column name="nivel" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="004-create-ingresos-tables" author="tuxoftware">
+        <createTable tableName="operacion_ingresos">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="fecha_emision" type="TIMESTAMP"/>
+            <column name="sesion_caja_id" type="UUID"/>
+            <column name="total_cobrado" type="DECIMAL(18, 2)"/>
+            <column name="estatus" type="VARCHAR(20)"/>
+            <column name="contribuyente_id" type="UUID"/>
+        </createTable>
+
+        <createTable tableName="operacion_detalles_ingreso">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ingreso_id" type="UUID">
+                <constraints foreignKeyName="fk_detalle_ingreso" references="operacion_ingresos(id)"/>
+            </column>
+            <column name="codigo_cri" type="VARCHAR(20)">
+                <constraints foreignKeyName="fk_detalle_rubro" references="cat_rubros_ingresos(codigo_cri)"/>
+            </column>
+            <column name="monto" type="DECIMAL(18, 2)"/>
+            <column name="concepto_descripcion" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
