@@ -1,5 +1,6 @@
 package com.tuxoftware.ms_tesoreria_recaudacion.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tuxoftware.ms_tesoreria_recaudacion.client.CalculoClient;
 import com.tuxoftware.ms_tesoreria_recaudacion.dto.request.IntencionPagoDTO;
@@ -22,10 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -121,27 +119,29 @@ public class PagoServiceImpl implements PagoService {
 
     @SneakyThrows
     private void registrarEventoOutbox(IntencionPagoDTO request, Ingreso ingreso) {
-        String tipoEvento = switch (request.claveConcepto()) {
-            case "IMP_PREDIAL_URBANO" -> "ACTUALIZAR_PADRON_PREDIAL";
-            case "DERECHO_AGUA" -> "ACTUALIZAR_CONTRATO_AGUA";
-            case "LIC_CONST" -> "ACTUALIZAR_LICENCIA";
-            default -> "GENERICO";
-        };
+        try {
+            // Java 21: Map.of para crear mapas inmutables de forma concisa
+            Map<String, Object> payloadData = Map.of(
+                    "referenciaId", request.referenciaId(), // UUID del Predio
+                    "anio", request.anioFiscal(),           // Año pagado (Ej: 2025)
+                    "ingresoId", ingreso.getId(),           // Trazabilidad
+                    "monto", request.montoTotal()           // Auditoría
+            );
 
-        if (!"GENERICO".equals(tipoEvento)) {
-            var payload = new EventoPayload(request.referenciaId(), request.anioFiscal(), ingreso.getId());
+            String payloadJson = objectMapper.writeValueAsString(payloadData);
 
             EventoIntegracion evento = EventoIntegracion.builder()
-                    .tipoEvento(tipoEvento)
-                    .payloadJson(objectMapper.writeValueAsString(payload))
+                    .tipoEvento("ACTUALIZAR_PADRON_PREDIAL")
+                    .payloadJson(payloadJson)
                     .estatus("PENDIENTE")
                     .fechaCreacion(LocalDateTime.now())
                     .build();
 
             eventoRepository.save(evento);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error serializando evento de integración", e);
         }
     }
 
-    // Record auxiliar local
-    record EventoPayload(UUID referenciaId, Integer anio, UUID ingresoId) {}
 }
