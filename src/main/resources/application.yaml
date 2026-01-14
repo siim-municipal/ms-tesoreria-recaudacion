@@ -47,11 +47,6 @@ spring:
 app:
   security:
     client-id: ${KEYCLOAK_CLIENT_ID:siim-frontend}
-  clients:
-    ms-calculo:
-      url: ${:http://localhost:8082} # O nombre de servicio en K8s/Docker
-    ms-padron:
-      url: http://localhost:8081
 
 eureka:
   client:
@@ -59,3 +54,8 @@ eureka:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/} # Apunta a ms-discovery
   instance:
     prefer-ip-address: true # Vital para Docker
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
