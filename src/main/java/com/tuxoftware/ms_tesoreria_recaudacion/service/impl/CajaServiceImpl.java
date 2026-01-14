@@ -1,13 +1,17 @@
 package com.tuxoftware.ms_tesoreria_recaudacion.service.impl;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tuxoftware.ms_tesoreria_recaudacion.dto.request.AperturaCajaRequest;
+import com.tuxoftware.ms_tesoreria_recaudacion.dto.request.CorteCajaRequest;
 import com.tuxoftware.ms_tesoreria_recaudacion.enums.EstadoSesion;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.Caja;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.SesionCaja;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.repository.CajaRepository;
+import com.tuxoftware.ms_tesoreria_recaudacion.persistence.repository.IngresoRepository;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.repository.SesionCajaRepository;
 import com.tuxoftware.ms_tesoreria_recaudacion.service.CajaService;
+import com.tuxoftware.ms_tesoreria_recaudacion.service.ReciboService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,6 +30,9 @@ public class CajaServiceImpl implements CajaService {
 
     private final CajaRepository cajaRepository;
     private final SesionCajaRepository sesionRepository;
+    private final ObjectMapper objectMapper;
+    private final IngresoRepository ingresoRepository;
+    private final ReciboService reciboService;
 
     @Transactional
     @Override
@@ -82,4 +90,49 @@ public class CajaServiceImpl implements CajaService {
         sesion.setFechaCierre(LocalDateTime.now());
         sesionRepository.save(sesion);
     }
+
+    @Override
+    @Transactional
+    public byte[] realizarCorteCaja(CorteCajaRequest request) {
+        // 1. Recuperar Sesión y Validar Estado
+        SesionCaja sesion = sesionRepository.findById(request.sesionCajaId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sesión no encontrada"));
+
+        if (sesion.getEstatus() != EstadoSesion.ABIERTA) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "La sesión ya no está abierta.");
+        }
+
+        // 2. Calcular Total Sistema (Lo que dice la BD)
+        BigDecimal totalSistema = ingresoRepository.sumarTotalPorSesion(sesion.getId());
+
+        // 3. Calcular Total Declarado (Lo que contó el cajero)
+        BigDecimal totalDeclarado = request.desgloseEfectivo().entrySet().stream()
+                .map(entry -> entry.getKey().multiply(BigDecimal.valueOf(entry.getValue())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 4. Calcular Diferencia
+        BigDecimal diferencia = totalDeclarado.subtract(totalSistema);
+
+        // 5. Actualizar y Cerrar Sesión
+        sesion.setTotalSistema(totalSistema);
+        sesion.setTotalDeclarado(totalDeclarado);
+        sesion.setDiferencia(diferencia);
+        sesion.setFechaCierre(LocalDateTime.now());
+        sesion.setEstatus(EstadoSesion.CERRADA);
+        sesion.setObservaciones(request.observaciones());
+
+        try {
+            sesion.setDesgloseArqueoJson(objectMapper.writeValueAsString(request.desgloseEfectivo()));
+        } catch (Exception e) {
+            log.warn("No se pudo serializar el desglose de efectivo", e);
+        }
+
+        sesionRepository.save(sesion);
+        log.info("Corte de caja realizado. Sesión: {}, Diferencia: {}", sesion.getId(), diferencia);
+
+        // 6. Generar PDF del Corte
+        return reciboService.generarPdfCorte(sesion);
+    }
+
+
 }

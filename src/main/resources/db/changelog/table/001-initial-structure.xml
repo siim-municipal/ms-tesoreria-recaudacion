@@ -33,6 +33,21 @@
             <column name="saldo_inicial" type="DECIMAL(18, 2)">
                 <constraints nullable="false"/>
             </column>
+            <column name="total_sistema" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="total_declarado" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="diferencia" type="DECIMAL(19, 2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="desglose_arqueo_json" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="observaciones" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
             <column name="estatus" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>

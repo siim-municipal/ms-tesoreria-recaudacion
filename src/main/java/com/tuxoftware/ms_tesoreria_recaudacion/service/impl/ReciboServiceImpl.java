@@ -2,16 +2,19 @@ package com.tuxoftware.ms_tesoreria_recaudacion.service.impl;
 
 import com.tuxoftware.ms_tesoreria_recaudacion.dto.reporte.ReciboDetalleDTO;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.Ingreso;
+import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.SesionCaja;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.repository.IngresoRepository;
 import com.tuxoftware.ms_tesoreria_recaudacion.service.ReciboService;
 import com.tuxoftware.ms_tesoreria_recaudacion.utils.NumberToLetterConverter;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -72,6 +75,34 @@ public class ReciboServiceImpl implements ReciboService {
         } catch (Exception e) {
             log.error("Error generando PDF para ingreso {}", ingresoId, e);
             throw new RuntimeException("Error al generar el recibo oficial", e);
+        }
+    }
+
+    @Override
+    public byte[] generarPdfCorte(SesionCaja sesion) {
+        try {
+            // Parámetros del Reporte
+            Map<String, Object> params = new HashMap<>();
+            params.put("ID_SESION", sesion.getId().toString());
+            params.put("CAJERO", "Usuario Actual"); // Obtener del SecurityContext
+            params.put("FECHA_CIERRE", java.sql.Timestamp.valueOf(sesion.getFechaCierre()));
+            params.put("TOTAL_SISTEMA", sesion.getTotalSistema());
+            params.put("TOTAL_DECLARADO", sesion.getTotalDeclarado());
+            params.put("DIFERENCIA", sesion.getDiferencia());
+
+            // Si quieres pasar el desglose al reporte, conviértelo a una lista de DTOs simples
+            // List<DetalleEfectivoDTO> listaDesglose = ...
+            // params.put("DESGLOSE_DS", new JRBeanCollectionDataSource(listaDesglose));
+
+            InputStream reportStream = new ClassPathResource("reports/corte_caja.jrxml").getInputStream();
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+            // Usamos una lista vacía si el reporte no tiene tablas de detalle complejas, solo totales
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
+
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error generando reporte de corte", e);
         }
     }
 }
