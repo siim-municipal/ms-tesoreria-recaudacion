@@ -53,6 +53,8 @@ public interface IngresoRepository extends JpaRepository<Ingreso, UUID> {
                 THEN i.totalCobrado ELSE 0 END), 0) AS totalAnterior
         FROM Ingreso i
         WHERE i.estatus = 'PAGADO'
+            AND (i.fechaEmision BETWEEN :inicioActual AND :finActual\s
+                       OR i.fechaEmision BETWEEN :inicioAnterior AND :finAnterior)
     """)
     TotalesComparativosView obtenerTotalesComparativos(
             @Param("inicioActual") LocalDateTime inicioActual,
