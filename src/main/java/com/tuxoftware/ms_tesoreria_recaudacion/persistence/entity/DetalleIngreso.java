@@ -1,5 +1,6 @@
 package com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class DetalleIngreso {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingreso_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     private Ingreso ingreso;
 
     // Vinculación estricta al CRI

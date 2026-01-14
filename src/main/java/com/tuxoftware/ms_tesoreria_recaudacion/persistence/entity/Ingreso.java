@@ -41,4 +41,7 @@ public class Ingreso {
     @OneToMany(mappedBy = "ingreso", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<DetalleIngreso> detalles = new ArrayList<>();
+
+    @Column(name = "referencia_uuid", unique = true, updatable = false)
+    private UUID referenciaUuid;
 }

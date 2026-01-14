@@ -44,7 +44,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="004-create-cri-table" author="tuxoftware">
+    <changeSet id="002-create-cri-table" author="Hugo Cobos">
         <createTable tableName="cat_rubros_ingresos">
             <column name="codigo_cri" type="VARCHAR(20)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -54,10 +54,13 @@
             </column>
             <column name="cuenta_contable" type="VARCHAR(50)"/>
             <column name="nivel" type="INT"/>
+            <column name="clave_concepto" type="VARCHAR(50)">
+                <constraints unique="true"/>
+            </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="004-create-ingresos-tables" author="tuxoftware">
+    <changeSet id="003-create-ingresos-tables" author="Hugo Cobos">
         <createTable tableName="operacion_ingresos">
             <column name="id" type="UUID">
                 <constraints primaryKey="true"/>
@@ -67,6 +70,9 @@
             <column name="total_cobrado" type="DECIMAL(18, 2)"/>
             <column name="estatus" type="VARCHAR(20)"/>
             <column name="contribuyente_id" type="UUID"/>
+            <column name="referencia_uuid" type="UUID">
+                <constraints unique="true"/>
+            </column>
         </createTable>
 
         <createTable tableName="operacion_detalles_ingreso">
@@ -82,6 +88,34 @@
             <column name="monto" type="DECIMAL(18, 2)"/>
             <column name="concepto_descripcion" type="VARCHAR(255)"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="004-create-outbox-table" author="Hugo Cobos">
+        <createTable tableName="eventos_integracion">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="tipo_evento" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="payload_json" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="estatus" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="fecha_creacion" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="eventos_integracion" indexName="idx_eventos_pendientes">
+            <column name="estatus"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>
