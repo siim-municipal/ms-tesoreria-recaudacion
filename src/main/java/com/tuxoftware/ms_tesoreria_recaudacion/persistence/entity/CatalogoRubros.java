@@ -23,4 +23,8 @@ public class CatalogoRubros {
 
     @Column(name = "nivel", nullable = false)
     private Integer nivel; // 1=Rubro, 2=Tipo, 3=Clase, 4=Concepto
+
+    // Sirve para mapear el concepto del cobro (Business Key) con el rubro contable
+    @Column(name = "clave_concepto", length = 50, unique = true)
+    private String claveConcepto; // Ej: "IMP_PREDIAL_URBANO"
 }

@@ -34,9 +34,24 @@ spring:
           issuer-uri: ${ISSUER_URI_KEYCLOAK:http://localhost:8180/realms/tuxtepec-gob}
           jwk-set-uri: ${JWK_SET_URI_KEYCLOAK:http://keycloak:8180/realms/tuxtepec-gob/protocol/openid-connect/certs}
 
+  cloud:
+    openfeign:
+      httpclient:
+        hc5:
+          enabled: true
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
 app:
   security:
     client-id: ${KEYCLOAK_CLIENT_ID:siim-frontend}
+  clients:
+    ms-calculo:
+      url: ${:http://localhost:8082} # O nombre de servicio en K8s/Docker
+    ms-padron:
+      url: http://localhost:8081
 
 eureka:
   client:
