@@ -37,6 +37,9 @@ public class Ingreso {
     @Column(length = 20) // PAGADO, CANCELADO
     private String estatus;
 
+    @Column(name = "metodo_pago", length = 50)
+    private String metodoPago;
+
     // Relación OneToMany con el detalle
     @OneToMany(mappedBy = "ingreso", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
