@@ -34,6 +34,22 @@ public class SesionCaja {
     @Column(name = "saldo_inicial", nullable = false, precision = 18, scale = 2)
     private BigDecimal saldoInicial;
 
+    @Column(name = "total_sistema", precision = 19, scale = 2)
+    private BigDecimal totalSistema;
+
+    @Column(name = "total_declarado", precision = 19, scale = 2)
+    private BigDecimal totalDeclarado;
+
+    @Column(name = "diferencia", precision = 19, scale = 2)
+    private BigDecimal diferencia;
+
+    // JSON o String para guardar cuántos billetes hubo (opcional pero recomendado para auditoría forense)
+    @Column(name = "desglose_arqueo_json", columnDefinition = "TEXT")
+    private String desgloseArqueoJson;
+
+    @Column(name = "observaciones", columnDefinition = "TEXT")
+    private String observaciones;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "estatus", nullable = false)
     private EstadoSesion estatus;

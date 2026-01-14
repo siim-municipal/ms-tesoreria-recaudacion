@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="CorteCaja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="591f8616-0909-41b9-8c46-9b24783e4492">
+
+    <parameter name="ID_SESION" class="java.lang.String"/>
+    <parameter name="CAJERO" class="java.lang.String"/>
+    <parameter name="FECHA_CIERRE" class="java.util.Date"/>
+    <parameter name="TOTAL_SISTEMA" class="java.math.BigDecimal"/>
+    <parameter name="TOTAL_DECLARADO" class="java.math.BigDecimal"/>
+    <parameter name="DIFERENCIA" class="java.math.BigDecimal"/>
+
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+
+    <title>
+        <band height="80" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="25" uuid="a1b2c3d4-e5f6-4000-8000-000000000001"/>
+                <textElement textAlignment="Center">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <text><![CDATA[MUNICIPIO DE TUXTEPEC]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="25" width="555" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000002"/>
+                <textElement textAlignment="Center">
+                    <font size="14"/>
+                </textElement>
+                <text><![CDATA[TESORERÍA MUNICIPAL - CORTE DE CAJA]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement x="0" y="50" width="555" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000003"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="75" width="555" height="1" uuid="a1b2c3d4-e5f6-4000-8000-000000000004"/>
+            </line>
+        </band>
+    </title>
+
+    <pageHeader>
+        <band height="60" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="10" width="100" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000005"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[ID SESIÓN:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="100" y="10" width="200" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000006"/>
+                <textFieldExpression><![CDATA[$P{ID_SESION}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="35" width="100" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000007"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[CAJERO:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="100" y="35" width="450" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000008"/>
+                <textFieldExpression><![CDATA[$P{CAJERO}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+
+    <detail>
+        <band height="200" splitType="Stretch">
+            <rectangle>
+                <reportElement x="80" y="10" width="400" height="120" backcolor="#F5F5F5" uuid="a1b2c3d4-e5f6-4000-8000-000000000009"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </graphicElement>
+            </rectangle>
+
+            <staticText>
+                <reportElement x="100" y="20" width="200" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000010"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="12"/>
+                </textElement>
+                <text><![CDATA[Total Esperado (Sistema):]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="100" y="50" width="200" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000011"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="12"/>
+                </textElement>
+                <text><![CDATA[Total Declarado (Efectivo):]]></text>
+            </staticText>
+
+            <line>
+                <reportElement x="100" y="75" width="360" height="1" uuid="a1b2c3d4-e5f6-4000-8000-000000000012"/>
+                <graphicElement>
+                    <pen lineStyle="Dashed"/>
+                </graphicElement>
+            </line>
+
+            <staticText>
+                <reportElement x="100" y="90" width="200" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000013"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[DIFERENCIA:]]></text>
+            </staticText>
+
+            <textField pattern="¤#,##0.00">
+                <reportElement x="310" y="20" width="150" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000014"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{TOTAL_SISTEMA}]]></textFieldExpression>
+            </textField>
+
+            <textField pattern="¤#,##0.00">
+                <reportElement x="310" y="50" width="150" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000015"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{TOTAL_DECLARADO}]]></textFieldExpression>
+            </textField>
+
+            <textField pattern="¤#,##0.00">
+                <reportElement x="310" y="90" width="150" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000016"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{DIFERENCIA}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="80" y="140" width="400" height="40" forecolor="#666666" uuid="a1b2c3d4-e5f6-4000-8000-000000000017"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="9" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[* Una diferencia negativa indica un FALTANTE de efectivo.
+* Una diferencia positiva indica un SOBRANTE de efectivo.]]></text>
+            </staticText>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="150" splitType="Stretch">
+            <line>
+                <reportElement x="50" y="80" width="200" height="1" uuid="a1b2c3d4-e5f6-4000-8000-000000000018"/>
+            </line>
+            <staticText>
+                <reportElement x="50" y="85" width="200" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000019"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[FIRMA DEL CAJERO]]></text>
+            </staticText>
+
+            <line>
+                <reportElement x="300" y="80" width="200" height="1" uuid="a1b2c3d4-e5f6-4000-8000-000000000020"/>
+            </line>
+            <staticText>
+                <reportElement x="300" y="85" width="200" height="20" uuid="a1b2c3d4-e5f6-4000-8000-000000000021"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[FIRMA DEL SUPERVISOR]]></text>
+            </staticText>
+        </band>
+    </summary>
+
+</jasperReport>
