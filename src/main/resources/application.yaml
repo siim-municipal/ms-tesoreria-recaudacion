@@ -10,6 +10,11 @@ spring:
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:Abc12345}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 60
+      minimum-idle: 10
+      connection-timeout: 20000
+      pool-name: HikariPool-Tesoreria
 
   jpa:
     hibernate:
@@ -19,6 +24,9 @@ spring:
       hibernate:
         format_sql: true
         default_schema: tuxtepec
+        jdbc:
+          fetch_size: 50
+          batch_size: 25
     open-in-view: false
 
   liquibase:

@@ -4,8 +4,11 @@ import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.Ingreso;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.projection.ResumenIngresoDiarioView;
 import com.tuxoftware.ms_tesoreria_recaudacion.persistence.projection.TotalesComparativosView;
 import feign.Param;
+import jakarta.persistence.QueryHint;
+import org.hibernate.jpa.HibernateHints;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -56,6 +59,10 @@ public interface IngresoRepository extends JpaRepository<Ingreso, UUID> {
             AND (i.fechaEmision BETWEEN :inicioActual AND :finActual\s
                        OR i.fechaEmision BETWEEN :inicioAnterior AND :finAnterior)
     """)
+    @QueryHints(value = {
+            @QueryHint(name = HibernateHints.HINT_READ_ONLY, value = "true"),
+            @QueryHint(name = HibernateHints.HINT_FETCH_SIZE, value = "50") // Traer en lotes
+    })
     TotalesComparativosView obtenerTotalesComparativos(
             @Param("inicioActual") LocalDateTime inicioActual,
             @Param("finActual") LocalDateTime finActual,
