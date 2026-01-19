@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,6 +34,11 @@ public class CajaServiceImpl implements CajaService {
     private final ObjectMapper objectMapper;
     private final IngresoRepository ingresoRepository;
     private final ReciboService reciboService;
+
+    @Override
+    public List<Caja> listarCajasDisponibles() {
+        return cajaRepository.findByActivaTrue();
+    }
 
     @Transactional
     @Override

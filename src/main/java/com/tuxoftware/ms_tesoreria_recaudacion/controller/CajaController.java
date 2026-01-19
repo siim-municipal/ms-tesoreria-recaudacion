@@ -2,6 +2,7 @@ package com.tuxoftware.ms_tesoreria_recaudacion.controller;
 
 import com.tuxoftware.ms_tesoreria_recaudacion.dto.request.AperturaCajaRequest;
 import com.tuxoftware.ms_tesoreria_recaudacion.dto.request.CorteCajaRequest;
+import com.tuxoftware.ms_tesoreria_recaudacion.persistence.entity.Caja;
 import com.tuxoftware.ms_tesoreria_recaudacion.service.CajaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +27,12 @@ import java.util.UUID;
 public class CajaController {
 
     private final CajaService cajaService;
+
+    @GetMapping("/disponibles")
+    @Operation(summary = "Listar cajas activas")
+    public ResponseEntity<List<Caja>> listarCajas() {
+        return ResponseEntity.ok(cajaService.listarCajasDisponibles());
+    }
 
     @PostMapping("/apertura")
     @Operation(summary = "Abrir sesión de caja")
