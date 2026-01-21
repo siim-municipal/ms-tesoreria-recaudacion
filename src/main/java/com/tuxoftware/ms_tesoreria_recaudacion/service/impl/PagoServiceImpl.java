@@ -97,6 +97,7 @@ public class PagoServiceImpl implements PagoService {
                 .fechaEmision(LocalDateTime.now())
                 .sesionCajaId(request.sesionCajaId())
                 .contribuyenteId(request.contribuyenteId())
+                .predioId(request.referenciaId())
                 .totalCobrado(request.montoTotal())
                 .estatus("PAGADO")
                 .build();
@@ -110,7 +111,7 @@ public class PagoServiceImpl implements PagoService {
                 .ingreso(ingreso)
                 .rubro(rubro)
                 .monto(request.montoTotal())
-                .conceptoDescripcion("Cobro de " + request.claveConcepto())
+                .conceptoDescripcion("Cobro de " + request.claveConcepto().replace("_", " "))
                 .build();
 
         ingreso.setDetalles(new ArrayList<>(List.of(detalle)));

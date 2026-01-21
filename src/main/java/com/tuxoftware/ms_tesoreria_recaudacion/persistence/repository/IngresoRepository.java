@@ -69,4 +69,6 @@ public interface IngresoRepository extends JpaRepository<Ingreso, UUID> {
             @Param("inicioAnterior") LocalDateTime inicioAnterior,
             @Param("finAnterior") LocalDateTime finAnterior
     );
+
+    List<Ingreso> findByPredioIdOrderByFechaEmisionDesc(UUID predioId);
 }

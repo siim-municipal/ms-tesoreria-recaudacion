@@ -34,6 +34,9 @@ public class Ingreso {
     @Column(name = "total_cobrado", nullable = false, precision = 18, scale = 2)
     private BigDecimal totalCobrado;
 
+    @Column(name = "predio_id")
+    private UUID predioId;
+
     @Column(length = 20) // PAGADO, CANCELADO
     private String estatus;
 

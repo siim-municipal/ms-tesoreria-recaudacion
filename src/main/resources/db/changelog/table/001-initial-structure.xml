@@ -87,6 +87,9 @@
             <column name="metodo_pago" type="VARCHAR(50)">
                 <constraints nullable="true"/>
             </column>
+            <column name="predio_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
             <column name="contribuyente_id" type="UUID"/>
             <column name="referencia_uuid" type="UUID">
                 <constraints unique="true"/>
@@ -96,6 +99,10 @@
         <createIndex tableName="operacion_ingresos" indexName="idx_ingreso_fecha_estatus">
             <column name="estatus"/>
             <column name="fecha_emision"/>
+        </createIndex>
+
+        <createIndex indexName="idx_ingreso_predio" tableName="operacion_ingresos">
+            <column name="predio_id"/>
         </createIndex>
 
         <createTable tableName="operacion_detalles_ingreso">
